@@ -12,8 +12,14 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache mod_rewrite
+# Enable Apache modules
 RUN a2enmod rewrite
+
+# Configure PHP for Apache
+RUN echo '<FilesMatch \.php$>\n\
+    SetHandler application/x-httpd-php\n\
+</FilesMatch>' > /etc/apache2/conf-available/php-fpm.conf \
+    && a2enconf php-fpm
 
 # Set working directory
 WORKDIR /var/www/html
