@@ -105,12 +105,16 @@ jobs:
         with:
           context: .
           push: false
+          load: true
           tags: php-todo-api:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Test Docker image
         run: |
+          # Verify image exists
+          docker images | grep php-todo-api || exit 1
+
           docker run -d --name test-app -p 8001:80 \
             -e DB_HOST=mysql \
             -e DB_DATABASE=todoapp \
@@ -127,5 +131,6 @@ jobs:
             docker rm test-app
           else
             echo "Docker container failed to start"
+            docker logs test-app
             exit 1
           fi
