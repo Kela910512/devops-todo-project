@@ -116,7 +116,7 @@ Pull Request opened/updated
 │   - PHP 8.2 test  │
 │   - PHP 8.3 test  │
 │   - Docker build  │
-│   ✅ vagy ❌      │
+│   ✅ vagy ❌     │
 └───────────────────┘
     ↓
     CD Pipeline      ❌ NEM FUT
