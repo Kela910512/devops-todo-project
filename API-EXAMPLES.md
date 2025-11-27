@@ -264,8 +264,8 @@ $body = @{
 
 Invoke-RestMethod -Uri "http://localhost:8000/api/todos" `
   -Method Post `
-  -ContentType "application/json" `
-  -Body $body
+  -ContentType "application/json; charset=utf-8" `
+  -Body ([System.Text.Encoding]::UTF8.GetBytes($body))
 
 # Teljes
 $body = @{
@@ -273,13 +273,13 @@ $body = @{
     description = "README és dokumentáció elkészítése"
     priority = "high"
     due_date = "2025-12-01 23:59:59"
-    completed = $false
+    completed = $true
 } | ConvertTo-Json
 
 Invoke-RestMethod -Uri "http://localhost:8000/api/todos" `
   -Method Post `
-  -ContentType "application/json" `
-  -Body $body
+  -ContentType "application/json; charset=utf-8" `
+  -Body ([System.Text.Encoding]::UTF8.GetBytes($body))
 ```
 
 ### Request Body

@@ -111,7 +111,16 @@ class TodoController {
             $description = $input['description'] ?? null;
             $priority = $input['priority'] ?? 'medium';
             $due_date = $input['due_date'] ?? null;
-            $completed = isset($input['completed']) ? filter_var($input['completed'], FILTER_VALIDATE_BOOLEAN) : false;
+
+            // Handle boolean completed field properly (JSON true/false, 1/0, "true"/"false")
+            $completed = false;
+            if (isset($input['completed'])) {
+                if (is_bool($input['completed'])) {
+                    $completed = $input['completed'];
+                } else {
+                    $completed = filter_var($input['completed'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false;
+                }
+            }
 
             // Validate priority
             if (!in_array($priority, ['low', 'medium', 'high'])) {
@@ -202,7 +211,12 @@ class TodoController {
 
             if (isset($input['completed'])) {
                 $updates[] = "completed = :completed";
-                $params[':completed'] = filter_var($input['completed'], FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+                // Handle boolean properly (JSON true/false, 1/0, "true"/"false")
+                if (is_bool($input['completed'])) {
+                    $params[':completed'] = $input['completed'] ? 1 : 0;
+                } else {
+                    $params[':completed'] = filter_var($input['completed'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ? 1 : 0;
+                }
             }
 
             if (empty($updates)) {

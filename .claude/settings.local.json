@@ -14,7 +14,8 @@
       "Bash(git branch:*)",
       "Bash(git remote add:*)",
       "Bash(git push:*)",
-      "Bash(docker-compose restart:*)"
+      "Bash(docker-compose restart:*)",
+      "Bash(timeout 3 bash:*)"
     ],
     "deny": [],
     "ask": []
