@@ -143,21 +143,38 @@ kubectl logs -n php-todo-app -l app=php-todo-api
 
 ### CI Pipeline (Continuous Integration)
 
-**Trigger:** Pull Request vagy push a `develop` branch-re
+**Trigger:** Push a `main` vagy `develop` branch-re, vagy Pull Request
 
-**Lépések:**
+**Multi-Version Testing:**
+A CI pipeline **párhuzamosan fut PHP 8.2 és PHP 8.3 verziókon** is, biztosítva a kompatibilitást.
+
+**Lépések (minden PHP verziónál):**
 1. Kód checkout
-2. PHP 8.2 és 8.3 verziókon tesztelés
-3. MySQL service indítása
-4. PHP beépített szerver indítása
-5. API endpoint tesztek futtatása:
-   - Health check
-   - Metrics endpoint
-   - Todos CRUD műveletek
-6. Docker image build teszt
-7. Docker container futtatási teszt
+2. **PHP 8.2 job** (párhuzamos)
+   - MySQL service indítása
+   - PHP beépített szerver indítása
+   - API endpoint tesztek:
+     - ✅ Health check (`/api/health`)
+     - ✅ Metrics endpoint (`/api/metrics`)
+     - ✅ Todos API (`/api/todos`)
+3. **PHP 8.3 job** (párhuzamos)
+   - Ugyanazok a tesztek
+4. **Docker Build & Test** (ha mindkét PHP teszt sikeres)
+   - Docker image build (Buildx)
+   - Image load local registry-be
+   - Container indítási teszt
+   - Container működés validálás
+
+**GitHub Actions Matrix Strategy:**
+```yaml
+strategy:
+  matrix:
+    php-version: ['8.2', '8.3']
+```
 
 **Fájl:** `.github/workflows/ci.yml`
+
+**Megtekintés:** https://github.com/Kela910512/devops-todo-project/actions
 
 ### CD Pipeline (Continuous Deployment)
 
@@ -180,6 +197,69 @@ DOCKER_PASSWORD      # Docker Hub token/jelszó
 ```
 
 Beállítás: GitHub repository → Settings → Secrets and variables → Actions → New repository secret
+
+## Branch Struktúra és Workflow
+
+### Elérhető Branch-ek
+
+**`main`** - Production branch
+- Minden push triggerel CI és CD pipeline-t
+- Automatikus deploy Docker Hub-ra
+- Production-ready kód
+- **Védett branch** (ajánlott)
+
+**`develop`** - Development/Staging branch
+- Minden push triggerel CI pipeline-t (tesztelés)
+- CD pipeline NEM fut (nincs production deploy)
+- Fejlesztés alatt álló funkciók
+- Pull Request-ek innen mennek `main`-re
+
+### Fejlesztési Workflow
+
+```bash
+# 1. Új funkció fejlesztése
+git checkout develop
+git pull origin develop
+
+# 2. Változtatások
+# ... kód írása ...
+git add .
+git commit -m "Add new feature"
+git push origin develop
+# → CI pipeline fut (PHP 8.2 + 8.3 tesztek, Docker build)
+
+# 3. Amikor production-ready
+git checkout main
+git merge develop
+git push origin main
+# → CI + CD pipeline fut (tesztek + Docker Hub deploy)
+```
+
+### Pull Request Workflow (Ajánlott)
+
+```bash
+# 1. Feature branch
+git checkout -b feature/my-feature
+# ... kód írása ...
+git push origin feature/my-feature
+
+# 2. GitHub-on: Create Pull Request → develop vagy main
+# → CI pipeline fut automatikusan
+
+# 3. Code review után merge
+# → Ha main-re merge-eltél: CI + CD fut
+```
+
+### CI/CD Pipeline Triggerek
+
+| Branch/Esemény | CI (Build & Test) | CD (Deploy) |
+|---------------|-------------------|-------------|
+| Push to `main` | ✅ **FUT** | ✅ **FUT** |
+| Push to `develop` | ✅ **FUT** | ❌ NEM FUT |
+| Pull Request → `main` | ✅ **FUT** | ❌ NEM FUT |
+| Pull Request → `develop` | ✅ **FUT** | ❌ NEM FUT |
+
+**Részletek:** Lásd `PIPELINE-TRIGGERS.md`
 
 ## Monitoring és Metrikák
 

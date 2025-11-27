@@ -274,19 +274,25 @@ on:
 
 ## 🎯 Jelenlegi Setup Összefoglalás
 
-### Jelenleg Működő Branchez:
-- **`main`** - production branch
-  - Push → CI ✅ + CD ✅
-  - Docker Hub automatic deploy
+### ✅ Aktív Branch-ek:
 
-### Ha Létrehoznál:
-- **`develop`** - staging branch
-  - Push → CI ✅ only
-  - Test before production
+**`main`** - Production branch
+- Push → CI ✅ + CD ✅
+- Docker Hub automatic deploy
+- Production-ready code only
+- **URL:** https://github.com/Kela910512/devops-todo-project/tree/main
 
-- **`feature/*`** - feature branches
+**`develop`** - Staging/Development branch ⭐ **MOST LÉTREHOZVA**
+- Push → CI ✅ only (no deploy)
+- Test before production
+- Development work happens here
+- **URL:** https://github.com/Kela910512/devops-todo-project/tree/develop
+
+### 💡 Feature Branch-ek (létrehozhatók):
+- **`feature/*`** - Egyedi funkciók
   - PR → CI ✅ only
   - Code review before merge
+  - Example: `feature/add-authentication`
 
 ---
 
