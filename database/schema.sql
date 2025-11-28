@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS todos (
     INDEX idx_completed (completed),
     INDEX idx_priority (priority),
     INDEX idx_created_at (created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Minta adatok beszúrása
 INSERT INTO todos (title, description, priority, completed, due_date) VALUES
