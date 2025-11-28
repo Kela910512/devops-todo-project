@@ -14,14 +14,14 @@ class TodoController {
             $sql = "SELECT * FROM todos WHERE 1=1";
             $params = [];
 
-            // Filter by completed status
+            // Szűrés befejezettség szerint
             if (isset($_GET['completed'])) {
                 $completed = filter_var($_GET['completed'], FILTER_VALIDATE_BOOLEAN);
                 $sql .= " AND completed = :completed";
                 $params[':completed'] = $completed ? 1 : 0;
             }
 
-            // Filter by priority
+            // Szűrés prioritás szerint
             if (isset($_GET['priority']) && in_array($_GET['priority'], ['low', 'medium', 'high'])) {
                 $sql .= " AND priority = :priority";
                 $params[':priority'] = $_GET['priority'];
@@ -33,7 +33,7 @@ class TodoController {
             $stmt->execute($params);
             $todos = $stmt->fetchAll();
 
-            // Convert boolean values
+            // Boolean értékek konvertálása
             foreach ($todos as &$todo) {
                 $todo['completed'] = (bool)$todo['completed'];
             }
@@ -88,7 +88,7 @@ class TodoController {
         try {
             $input = json_decode(file_get_contents('php://input'), true);
 
-            // Validation
+            // Validáció
             if (empty($input['title'])) {
                 http_response_code(400);
                 echo json_encode([
@@ -112,7 +112,7 @@ class TodoController {
             $priority = $input['priority'] ?? 'medium';
             $due_date = $input['due_date'] ?? null;
 
-            // Handle boolean completed field properly (JSON true/false, 1/0, "true"/"false")
+            // Boolean completed mező kezelése (JSON true/false, 1/0, "true"/"false")
             $completed = false;
             if (isset($input['completed'])) {
                 if (is_bool($input['completed'])) {
@@ -122,7 +122,7 @@ class TodoController {
                 }
             }
 
-            // Validate priority
+            // Prioritás validálás
             if (!in_array($priority, ['low', 'medium', 'high'])) {
                 $priority = 'medium';
             }
@@ -141,7 +141,7 @@ class TodoController {
 
             $id = $this->conn->lastInsertId();
 
-            // Fetch the created todo
+            // Létrehozott TODO lekérése
             $stmt = $this->conn->prepare("SELECT * FROM todos WHERE id = :id");
             $stmt->execute([':id' => $id]);
             $todo = $stmt->fetch();
@@ -164,7 +164,7 @@ class TodoController {
 
     public function update($id) {
         try {
-            // Check if todo exists
+            // TODO létezésének ellenőrzése
             $stmt = $this->conn->prepare("SELECT id FROM todos WHERE id = :id");
             $stmt->execute([':id' => $id]);
             if (!$stmt->fetch()) {
@@ -211,7 +211,7 @@ class TodoController {
 
             if (isset($input['completed'])) {
                 $updates[] = "completed = :completed";
-                // Handle boolean properly (JSON true/false, 1/0, "true"/"false")
+                // Boolean értékek helyes kezelése (JSON true/false, 1/0, "true"/"false")
                 if (is_bool($input['completed'])) {
                     $params[':completed'] = $input['completed'] ? 1 : 0;
                 } else {
@@ -232,7 +232,7 @@ class TodoController {
             $stmt = $this->conn->prepare($sql);
             $stmt->execute($params);
 
-            // Fetch updated todo
+            // Frissített TODO lekérése
             $stmt = $this->conn->prepare("SELECT * FROM todos WHERE id = :id");
             $stmt->execute([':id' => $id]);
             $todo = $stmt->fetch();
@@ -276,7 +276,7 @@ class TodoController {
                 ':id' => $id
             ]);
 
-            // Fetch updated todo
+            // Frissített TODO lekérése
             $stmt = $this->conn->prepare("SELECT * FROM todos WHERE id = :id");
             $stmt->execute([':id' => $id]);
             $todo = $stmt->fetch();

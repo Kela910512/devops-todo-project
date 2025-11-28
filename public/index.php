@@ -22,7 +22,7 @@ $todoController = new TodoController($db);
 $healthController = new HealthController($db);
 $metricsController = new MetricsController($db);
 
-// Root API endpoint
+// Gyökér API endpoint
 if ($uri === '/api' || $uri === '/api/') {
     echo json_encode([
         'message' => 'DevOps TODO API - Plain PHP',
@@ -53,7 +53,7 @@ if ($uri === '/api/metrics') {
     exit;
 }
 
-// Todos endpoints
+// Todos endpointok
 if (preg_match('/^\/api\/todos(\/(\d+))?(\/toggle)?$/', $uri, $matches)) {
     $id = isset($matches[2]) ? (int)$matches[2] : null;
     $toggle = isset($matches[3]);
@@ -77,6 +77,6 @@ if (preg_match('/^\/api\/todos(\/(\d+))?(\/toggle)?$/', $uri, $matches)) {
     exit;
 }
 
-// 404 Not Found
+// 404 Nem található
 http_response_code(404);
 echo json_encode(['error' => 'Endpoint not found']);

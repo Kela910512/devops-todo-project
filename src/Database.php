@@ -23,7 +23,7 @@ class Database {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-            // Create table if not exists
+            // Tábla létrehozása ha nem létezik
             $this->createTable();
         } catch(PDOException $e) {
             error_log("Database connection failed: " . $e->getMessage());

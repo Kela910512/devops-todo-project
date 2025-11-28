@@ -1,9 +1,9 @@
--- Create database
+-- Adatbázis létrehozása
 CREATE DATABASE IF NOT EXISTS todoapp CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE todoapp;
 
--- Create todos table
+-- Todos tábla létrehozása
 CREATE TABLE IF NOT EXISTS todos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS todos (
     INDEX idx_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Insert sample data
+-- Minta adatok beszúrása
 INSERT INTO todos (title, description, priority, completed, due_date) VALUES
-('Setup Docker environment', 'Configure Docker containers for the application', 'high', true, '2025-11-20 18:00:00'),
-('Implement CI/CD pipeline', 'Create GitHub Actions workflows for automated testing and deployment', 'high', false, '2025-11-25 23:59:59'),
-('Add Prometheus monitoring', 'Setup Prometheus and Grafana for application monitoring', 'medium', false, '2025-11-28 17:00:00'),
-('Write documentation', 'Create comprehensive README and project documentation', 'medium', false, '2025-11-30 12:00:00'),
-('Deploy to Kubernetes', 'Deploy the application to Kubernetes cluster', 'low', false, '2025-12-05 15:00:00');
+('Docker környezet beállítása', 'Docker konténerek konfigurálása az alkalmazáshoz', 'high', true, '2025-11-20 18:00:00'),
+('CI/CD pipeline implementálása', 'GitHub Actions workflow létrehozása automatikus teszteléshez és deployment-hez', 'high', false, '2025-11-25 23:59:59'),
+('Prometheus monitoring hozzáadása', 'Prometheus és Grafana beállítása alkalmazás monitoringhoz', 'medium', false, '2025-11-28 17:00:00'),
+('Dokumentáció írása', 'Átfogó README és projekt dokumentáció készítése', 'medium', false, '2025-11-30 12:00:00'),
+('Kubernetes deployment', 'Alkalmazás telepítése Kubernetes cluster-re', 'low', false, '2025-12-05 15:00:00');

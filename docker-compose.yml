@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # PHP Apache with plain PHP application
+  # PHP Apache sima PHP alkalmazással
   app:
     build:
       context: .
@@ -24,7 +24,7 @@ services:
       mysql:
         condition: service_healthy
 
-  # MySQL database
+  # MySQL adatbázis
   mysql:
     image: mysql:8.0
     container_name: todo-mysql
@@ -47,7 +47,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # PHPMyAdmin
+  # PHPMyAdmin adatbázis kezelő
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: todo-phpmyadmin
@@ -82,7 +82,7 @@ services:
     depends_on:
       - app
 
-  # Grafana visualization
+  # Grafana vizualizáció
   grafana:
     image: grafana/grafana:latest
     container_name: todo-grafana
